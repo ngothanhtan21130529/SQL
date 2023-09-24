@@ -1,0 +1,131 @@
+-- create database QuanLyNuocNgot;
+-- use QuanLyNuocNgot;
+create table NGK(
+    MaNGK varchar(10) primary key,
+    TenNGK varchar(20) not null,
+    Quycach varchar(5) not null,
+    MaLoaiNGK varchar(5)
+);
+create table LOAINGK(
+    MaLoaiNGK varchar(5) primary key ,
+    TenLoaiNGK varchar(30) not null,
+    MaNCC varchar(5)
+)
+create table NHACC(
+    MaNCC varchar(5) primary key,
+    TenNCC varchar(50) not null,
+    DiaChiNCC varchar(50) not null,
+    DTNCC varchar(10)
+);
+create table KH(
+   MaKH varchar(5) primary key,
+  TenKH varchar(10),
+  DCKH varchar(20),
+  DTKH varchar(10)
+
+);
+create table DDH(
+    SoDDH varchar(10) primary key,
+    NgayDH date not null ,
+    MaNCC varchar(5)
+);
+create table CT_DDH(
+    SoDDH varchar(10),
+    MaNGK varchar(10),
+    SLDat smallint not null,
+    primary key (SoDDH,MaNGK)
+);
+create table PHIEUGH(
+    SoPGH varchar(10) primary key ,
+    NgayGH date not null,
+    SoDDH varchar(10)
+);
+create table CT_PGH(
+    SoPGH varchar(10),
+    MaNGK varchar(10),
+    SLGiao smallint,
+    DGGiao smallint,
+    primary key (SoPGH,MaNGK)
+);
+create table HOADON(
+    SoHD varchar(10) primary key,
+    NgayLapHD date not null,
+    MaKH varchar(5),
+
+);
+create table CT_HOADON(
+    SoHD varchar(10) ,
+    MaNGK varchar(10) ,
+    SLKHMua smallint,
+    DGBan tinyint,
+    primary key (SoHD,MaNGK)
+);
+create table PHIEUHEN(
+    SoPH varchar(5) primary key ,
+    NgayLapPH date not null,
+    NgayHenGiao date not null,
+    MaKH varchar(5),
+
+);
+create table CT_PH(
+    SoPH varchar(5),
+    MaNGK varchar(10),
+    SLHen smallint,
+
+);
+create table PHIEUTRANO(
+    SoPTN varchar(10) primary key ,
+    NgayTra date not null,
+    SoTienTra date not null ,
+    SoHD varchar(10),
+);
+-- cau 1
+select * from NGK left join LOAINGK L on NGK.MaLoaiNGK = L.MaLoaiNGK;
+-- cau 2
+select * from NHACC
+where DiaChiNCC like '%TP.HCM'
+-- cau 3
+select * from HOADON
+where NgaylapHD between '1/5/2010' and '31/5/2010';
+-- cau 4
+select TenNCC from NHACC where TenNCC like '%CocaCola';
+-- cau 5
+ /*select Max(*)TenNCC from NHACC join LOAINGK L on NHACC.MaNCC = L.MaNCC
+join NGK N on L.MaLoaiNGK = N.MaLoaiNGK;
+group by ....
+-- cau 6
+
+
+  */
+-- cau 7
+
+
+
+-- cau 8
+/*select * from NGK join CT_HOADON CH on NGK.MaNGK = CH.MaNGK;
+group by ....
+
+ */
+-- cau 9
+select * from NGK join  CT_DDH CD on NGK.MaLoaiNGK = CD.MaNGK
+group by....
+-- cau 10
+--select SoDDH,MaNGK ,max(SLDat) from....
+-- cau 11
+select * from NGK join .....
+where .... between '1/1/2010' and '31/1/2010';
+-- cau 12
+select * from NGK join....
+where ..... between '1/6/2010' and '31/6/2010';
+-- cau 16
+select sum() from .....
+group by ....
+having .....
+-- cau 17
+select distinct * from NGK where ..... '5/2010'
+-- cau 18
+select MaNGK ,TenNGK,SLKHMua from NGK where .... '5/2010'
+-- cau 19
+--cau 20
+order by....
+--cau 21 select count(NgaylapHD) ....
