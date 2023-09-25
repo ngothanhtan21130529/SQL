@@ -1,140 +1,343 @@
--- create database QuanLyNuocNgot;
--- use QuanLyNuocNgot;
-create table NGK(
-    MaNGK varchar(10) primary key,
-    TenNGK varchar(20) not null,
-    Quycach varchar(5) not null,
+create database QuanLyNuocNgot;
+use QuanLyNuocNgot;
+create table NGK
+(
+    MaNGK     varchar(10) primary key,
+    TenNGK    varchar(20),
+    Quycach   varchar(5),
     MaLoaiNGK varchar(5)
 );
-create table LOAINGK(
-    MaLoaiNGK varchar(5) primary key ,
-    TenLoaiNGK varchar(30) not null,
-    MaNCC varchar(5)
-)
-create table NHACC(
-    MaNCC varchar(5) primary key,
-    TenNCC varchar(50) not null,
-    DiaChiNCC varchar(50) not null,
-    DTNCC varchar(10)
+create table LOAINGK
+(
+    MaLoaiNGK  varchar(5) primary key,
+    TenLoaiNGK varchar(30),
+    MaNCC      varchar(5)
 );
-create table KH(
-   MaKH varchar(5) primary key,
-  TenKH varchar(10),
-  DCKH varchar(20),
-  DTKH varchar(10)
+create table NHACC
+(
+    MaNCC     varchar(5) primary key,
+    TenNCC    varchar(50),
+    DiaChiNCC varchar(50),
+    DTNCC     varchar(10)
+);
+create table KH
+(
+    MaKH  varchar(5) primary key,
+    TenKH varchar(10),
+    DCKH  varchar(20),
+    DTKH  varchar(10)
 
 );
-create table DDH(
-    SoDDH varchar(10) primary key,
-    NgayDH date not null ,
-    MaNCC varchar(5)
+create table DDH
+(
+    SoDDH  varchar(10) primary key,
+    NgayDH date,
+    MaNCC  varchar(5)
 );
-create table CT_DDH(
+create table CT_DDH
+(
     SoDDH varchar(10),
     MaNGK varchar(10),
-    SLDat smallint not null,
-    primary key (SoDDH,MaNGK)
+    SLDat smallint,
+    primary key (SoDDH, MaNGK)
 );
-create table PHIEUGH(
-    SoPGH varchar(10) primary key ,
-    NgayGH date not null,
-    SoDDH varchar(10)
+create table PHIEUGH
+(
+    SoPGH  varchar(10) primary key,
+    NgayGH date,
+    SoDDH  varchar(10)
 );
-create table CT_PGH(
-    SoPGH varchar(10),
-    MaNGK varchar(10),
+create table CT_PGH
+(
+    SoPGH  varchar(10),
+    MaNGK  varchar(10),
     SLGiao smallint,
     DGGiao smallint,
-    primary key (SoPGH,MaNGK)
+    primary key (SoPGH, MaNGK)
 );
-create table HOADON(
-    SoHD varchar(10) primary key,
-    NgayLapHD date not null,
-    MaKH varchar(5),
+create table HOADON
+(
+    SoHD      varchar(10) primary key,
+    NgayLapHD date,
+    MaKH      varchar(5),
 
 );
-create table CT_HOADON(
-    SoHD varchar(10) ,
-    MaNGK varchar(10) ,
+create table CT_HOADON
+(
+    SoHD    varchar(10),
+    MaNGK   varchar(10),
     SLKHMua smallint,
-    DGBan tinyint,
-    primary key (SoHD,MaNGK)
+    DGBan   tinyint,
+    primary key (SoHD, MaNGK)
 );
-create table PHIEUHEN(
-    SoPH varchar(5) primary key ,
-    NgayLapPH date not null,
-    NgayHenGiao date not null,
-    MaKH varchar(5),
+create table PHIEUHEN
+(
+    SoPH        varchar(5) primary key,
+    NgayLapPH   date,
+    NgayHenGiao date,
+    MaKH        varchar(5),
 
 );
-create table CT_PH(
-    SoPH varchar(5),
+create table CT_PH
+(
+    SoPH  varchar(5),
     MaNGK varchar(10),
     SLHen smallint,
 
 );
-create table PHIEUTRANO(
-    SoPTN varchar(10) primary key ,
-    NgayTra date not null,
-    SoTienTra date not null ,
-    SoHD varchar(10),
+create table PHIEUTRANO
+(
+    SoPTN     varchar(10) primary key,
+    NgayTra   date not null,
+    SoTienTra date not null,
+    SoHD      varchar(10),
 );
--- cau 1
-select * from NGK left join LOAINGK L on NGK.MaLoaiNGK = L.MaLoaiNGK;
+--cau 1
+SELECT NGK.MaNGK, NGK.TenNGK, LOAINGK.TenLoaiNGK
+FROM NGK
+         JOIN LOAINGK ON NGK.MaLoaiNGK = LOAINGK.MaLoaiNGK;
 -- cau 2
-select * from NHACC
-where DiaChiNCC like '%TP.HCM'
+SELECT *
+FROM NHACC
+WHERE DiaChiNCC LIKE '%HCM%';
 -- cau 3
-select * from HOADON
-where NgaylapHD between '1/5/2010' and '31/5/2010';
+SELECT *
+FROM HOADON
+WHERE MONTH(NgayLapHD) = 5
+  AND YEAR(NgayLapHD) = 2010;
 -- cau 4
-select TenNCC from NHACC where TenNCC like '%CocaCola';
+SELECT DISTINCT NHACC.TenNCC
+FROM NHACC
+         JOIN NGK ON NHACC.MaNCC = NGK.MaNCC
+WHERE NGK.TenNGK = 'Coca Cola';
 -- cau 5
- /*select Max(*)TenNCC from NHACC join LOAINGK L on NHACC.MaNCC = L.MaNCC
-join NGK N on L.MaLoaiNGK = N.MaLoaiNGK;
-group by ....
+SELECT NHACC.TenNCC
+FROM NHACC
+         JOIN NGK ON NHACC.MaNCC = NGK.MaNCC
+GROUP BY NHACC.TenNCC
+HAVING COUNT(DISTINCT NGK.MaNGK) = (
+    SELECT MAX(LoaiNGKCount)
+    FROM (
+             SELECT NHACC.MaNCC, COUNT(DISTINCT NGK.MaNGK) AS LoaiNGKCount
+             FROM NHACC
+                      JOIN NGK ON NHACC.MaNCC = NGK.MaNCC
+             GROUP BY NHACC.MaNCC
+         ) AS SubQuery
+);
 -- cau 6
-
-
-  */
+SELECT DISTINCT NHACC.TenNCC
+FROM NHACC
+         LEFT JOIN NGK ON NHACC.MaNCC = NGK.MaNCC
+WHERE NGK.MaNGK IS NULL OR NGK.TenNGK <> 'Pepsi';
 -- cau 7
-
-
-
+SELECT NGK.MaNGK, NGK.TenNGK
+FROM NGK
+         LEFT JOIN CT_HOADON ON NGK.MaNGK = CT_HOADON.MaNGK
+WHERE CT_HOADON.MaNGK IS NULL;
 -- cau 8
-/*select * from NGK join CT_HOADON CH on NGK.MaNGK = CH.MaNGK;
-group by ....
-
- */
+SELECT NGK.TenNGK, SUM(CT_HOADON.SLKHMua) AS TongSoLuongBan
+FROM NGK
+         LEFT JOIN CT_HOADON ON NGK.MaNGK = CT_HOADON.MaNGK
+GROUP BY NGK.TenNGK;
 -- cau 9
-select * from NGK join  CT_DDH CD on NGK.MaLoaiNGK = CD.MaNGK
-group by....
--- cau 10
---select SoDDH,MaNGK ,max(SLDat) from....
--- cau 11
-select * from NGK join .....
-where .... between '1/1/2010' and '31/1/2010';
+SELECT NGK.TenNGK, SUM(CT_DDH.SLDat) AS TongSoLuongNhap
+FROM NGK
+         LEFT JOIN CT_DDH ON NGK.MaNGK = CT_DDH.MaNGK
+GROUP BY NGK.TenNGK;
+--cau 10
+WITH DDH_CTE AS (
+    SELECT SoDDH, MaNGK, SUM(SLDat) AS TongSoLuongDat
+    FROM CT_DDH
+    GROUP BY SoDDH, MaNGK
+)
+SELECT DDH.SoDDH, DDH.MaNGK, MAX(DDH_CTE.TongSoLuongDat) AS [SL đặt nhiều nhất]
+FROM DDH
+         JOIN DDH_CTE ON DDH.SoDDH = DDH_CTE.SoDDH AND DDH.MaNGK = DDH_CTE.MaNGK
+GROUP BY DDH.SoDDH, DDH.MaNGK;
+-- câu 11
+SELECT NGK.MaNGK, NGK.TenNGK
+FROM NGK
+         LEFT JOIN CT_DDH ON NGK.MaNGK = CT_DDH.MaNGK
+         LEFT JOIN DDH ON CT_DDH.SoDDH = DDH.SoDDH AND MONTH(DDH.NgayDH) = 1 AND YEAR(DDH.NgayDH) = 2010
+WHERE DDH.SoDDH IS NULL;
 -- cau 12
-select * from NGK join....
-where ..... between '1/6/2010' and '31/6/2010';
+SELECT NGK.TenNGK
+FROM NGK
+         LEFT JOIN CT_HOADON ON NGK.MaNGK = CT_HOADON.MaNGK
+         LEFT JOIN HOADON ON CT_HOADON.SoHD = HOADON.SoHD AND MONTH(HOADON.NgayLapHD) = 6 AND YEAR(HOADON.NgayLapHD) = 2010
+WHERE HOADON.SoHD IS NULL;
+-- cau 13
+SELECT COUNT(DISTINCT NGK.MaNGK) AS SoLuongNGK
+FROM CT_HOADON;
+-- cau 14
+SELECT COUNT(DISTINCT NGK.TenNGK) AS SoLuongLoaiNGK
+FROM CT_HOADON;
+-- cau 15
+SELECT TOP 1 KH.TenKH, COUNT(HOADON.SoHD) AS SoLanMuaHang
+FROM KH
+         JOIN HOADON ON KH.MaKH = HOADON.MaKH
+GROUP BY KH.TenKH
+ORDER BY SoLanMuaHang DESC;
 -- cau 16
-select sum() from .....
-group by ....
-having .....
+SELECT SUM(CT_HOADON.SLKHMua * CT_HOADON.DGBan) AS TongDoanhThu
+FROM CT_HOADON
+         JOIN HOADON ON CT_HOADON.SoHD = HOADON.SoHD
+WHERE YEAR(HOADON.NgayLapHD) = 2010;
 -- cau 17
-select distinct * from NGK where ..... '5/2010'
+SELECT TOP 5 NGK.TenNGK, SUM(CT_HOADON.SLKHMua * CT_HOADON.DGBan) AS DoanhThu
+FROM CT_HOADON
+         JOIN NGK ON CT_HOADON.MaNGK = NGK.MaNGK
+         JOIN HOADON ON CT_HOADON.SoHD = HOADON.SoHD
+WHERE MONTH(HOADON.NgayLapHD) = 5 AND YEAR(HOADON.NgayLapHD) = 2010
+GROUP BY NGK.TenNGK
+ORDER BY DoanhThu DESC;
 -- cau 18
-select MaNGK ,TenNGK,SLKHMua from NGK where .... '5/2010'
+SELECT NGK.MaNGK, NGK.TenNGK, SUM(CT_HOADON.SLKHMua) AS SLBan
+FROM NGK
+         LEFT JOIN CT_HOADON ON NGK.MaNGK = CT_HOADON.MaNGK
+         LEFT JOIN HOADON ON CT_HOADON.SoHD = HOADON.SoHD
+WHERE MONTH(HOADON.NgayLapHD) = 5 AND YEAR(HOADON.NgayLapHD) = 2010
+GROUP BY NGK.MaNGK, NGK.TenNGK;
 -- cau 19
---cau 20
-order by....
---cau 21 select count(NgaylapHD) ....
--- View
-Cau 1:
-create view V_NGK as select MaNGK,TenNGK,QuyCach,SoLuongBan,SoluongBan*Dongiaban as TongTien
-Cau 2:
-create view V_khachhang as select MaKH,TenKh,DTKH,SoLuongBan*DonGiaBan as TongTien
-Cau 3:
-create view V_TraNo as select ....
-Cau 4:
-create view V_ngk_ton as select .....
+SELECT NGK.MaNGK, NGK.TenNGK, COUNT(DISTINCT HOADON.MaKH) AS SoNguoiMua
+FROM NGK
+         LEFT JOIN CT_HOADON ON NGK.MaNGK = CT_HOADON.MaNGK
+         LEFT JOIN HOADON ON CT_HOADON.SoHD = HOADON.SoHD
+GROUP BY NGK.MaNGK, NGK.TenNGK
+ORDER BY SoNguoiMua DESC;
+-- cau 20
+SELECT MAX(NgayDH) AS NgayNhapHangGanNhat
+FROM DDH;
+-- cau 21
+SELECT COUNT(SoHD) AS SoLanMuaHang
+FROM HOADON
+WHERE MaKH = 'KH001';
+-- cau 22
+SELECT SoHD, SUM(SLKHMua * DGBan) AS TongTien
+FROM CT_HOADON
+GROUP BY SoHD;
+-- cau 23
+SELECT HOADON.SoHD, HOADON.NgayLapHD, HOADON.MaKH, KH.TenKH, SUM(CT_HOADON.SLKHMua * CT_HOADON.DGBan) AS TongTriGia
+FROM HOADON
+         JOIN CT_HOADON ON HOADON.SoHD = CT_HOADON.SoHD
+         JOIN KH ON HOADON.MaKH = KH.MaKH
+GROUP BY HOADON.SoHD, HOADON.NgayLapHD, HOADON.MaKH, KH.TenKH
+ORDER BY HOADON.NgayLapHD ASC, TongTriGia DESC;
+-- cau 24
+SELECT HOADON.SoHD, HOADON.NgayLapHD, SUM(CT_HOADON.SLKHMua * CT_HOADON.DGBan) AS TongTriGia
+FROM HOADON
+         JOIN CT_HOADON ON HOADON.SoHD = CT_HOADON.SoHD
+WHERE HOADON.NgayLapHD
+-- cau 25
+SELECT NGK.MaNGK, NGK.TenNGK, MONTH(HOADON.NgayLapHD) AS Thang, SUM(CT_HOADON.SLKHMua) AS SoLuongTieuThu
+FROM NGK
+         LEFT JOIN CT_HOADON ON NGK.MaNGK = CT_HOADON.MaNGK
+         LEFT JOIN HOADON ON CT_HOADON.SoHD = HOADON.SoHD AND YEAR(HOADON.NgayLapHD) = 2010
+GROUP BY NGK.MaNGK, NGK.TenNGK, MONTH(HOADON.NgayLapHD)
+ORDER BY NGK.MaNGK, Thang;
+-- cau 26
+SELECT NGK.MaNGK, NGK.TenNGK
+FROM NGK
+         LEFT JOIN CT_HOADON ON NGK.MaNGK = CT_HOADON.MaNGK
+         LEFT JOIN HOADON ON CT_HOADON.SoHD = HOADON.SoHD AND MONTH(HOADON.NgayLapHD) = 9 AND YEAR(HOADON.NgayLapHD) = 2010
+WHERE HOADON.SoHD IS NULL;
+--cau 27
+SELECT DISTINCT KH.MaKH, KH.TenKH, KH.DCKH
+FROM KH
+         JOIN HOADON ON KH.MaKH = HOADON.MaKH
+WHERE KH.DCKH LIKE '%TP.HCM%' AND MONTH(HOADON.NgayLapHD) = 9 AND YEAR(HOADON.NgayLapHD) = 2010;
+-- cau 28
+SELECT NGK.MaNGK, NGK.TenNGK, SUM(CT_HOADON.SLKHMua) AS SoLuongBan
+FROM NGK
+         LEFT JOIN CT_HOADON ON NGK.MaNGK = CT_HOADON.MaNGK
+         LEFT JOIN HOADON ON CT_HOADON.SoHD = HOADON.SoHD AND MONTH(HOADON.NgayLapHD) = 10 AND YEAR(HOADON.NgayLapHD) = 2010
+GROUP BY NGK.MaNGK, NGK.TenNGK
+ORDER BY SoLuongBan DESC;
+-- cau 29
+SELECT KH.MaKH, KH.TenKH, NGK.MaNGK, NGK.TenNGK, SUM(CT_HOADON.SLKHMua) AS TongSoLuongMua
+FROM KH
+         JOIN HOADON ON KH.MaKH = HOADON.MaKH
+         JOIN CT_HOADON ON HOADON.SoHD = CT_HOADON.SoHD
+         JOIN NGK ON CT_HOADON.MaNGK = NGK.MaNGK
+GROUP BY KH.MaKH, KH.TenKH, NGK.MaNGK, NGK.TenNGK
+ORDER BY KH.MaKH, NGK.MaNGK;
+-- cau 30
+SELECT TOP 1 KH.MaKH, KH.TenKH, SUM(CT_HOADON.SLKHMua * CT_HOADON.DGBan) AS TongNo
+FROM KH
+         JOIN HOADON ON KH.MaKH = HOADON.MaKH
+         JOIN CT_HOADON ON HOADON.SoHD = CT_HOADON.SoHD
+WHERE YEAR(HOADON.NgayLapHD) = 2010
+GROUP BY KH.MaKH, KH.TenKH
+ORDER BY TongNo DESC
+-- CAU 31
+SELECT COUNT(SoHD) AS SoHoaDonChuaThanhToan
+FROM HOADON
+WHERE SoHD NOT IN (SELECT SoHD FROM PHIEUGH);
+-- cau 32
+SELECT HOADON.SoHD, HOADON.NgayLapHD, KH.TenKH
+FROM HOADON
+         JOIN KH ON HOADON.MaKH = KH.MaKH
+WHERE HOADON.SoHD NOT IN (SELECT SoHD FROM PHIEUGH)
+  AND HOADON.MaKH IN (
+    SELECT MaKH
+    FROM HOADON
+    GROUP BY MaKH
+    HAVING COUNT(SoHD) = 1
+);
+-- cau 33
+SELECT NGK.MaNGK, NGK.TenNGK, SUM(CT_DDH.SLDat) AS TongSLDat
+FROM NGK
+         LEFT JOIN CT_DDH ON NGK.MaNGK = CT_DDH.MaNGK
+         LEFT JOIN DDH ON CT_DDH.SoDDH = DDH.SoDDH AND YEAR(DDH.NgayDH) = 2010
+GROUP BY NGK.MaNGK, NGK.TenNGK
+ORDER BY NGK.MaNGK;
+-- cau 34
+SELECT KH.MaKH, KH.TenKH, SUM(CT_HOADON.SLKHMua * CT_HOADON.DGBan) AS TongTienMua
+FROM KH
+         JOIN HOADON ON KH.MaKH = HOADON.MaKH
+         JOIN CT_HOADON ON HOADON.SoHD = CT_HOADON.SoHD
+WHERE YEAR(HOADON.NgayLapHD) = 2010
+GROUP BY KH.MaKH, KH.TenKH
+ORDER BY TongTienMua DESC;
+-- tao view
+--cau 1
+CREATE VIEW V_NGK AS
+SELECT NGK.MaNGK, NGK.TenNGK, NGK.Quycach, SUM(CT_HOADON.SLKHMua) AS SoLuongBan,
+       SUM(CT_HOADON.SLKHMua * CT_HOADON.DGBan) AS TongTien
+FROM NGK
+         LEFT JOIN CT_HOADON ON NGK.MaNGK = CT_HOADON.MaNGK
+GROUP BY NGK.MaNGK, NGK.TenNGK, NGK.Quycach;
+-- cau 4
+CREATE VIEW V_NGK_Ton AS
+SELECT NGK.MaNGK, NGK.TenNGK, NGK.Quycach
+FROM NGK
+         LEFT JOIN CT_HOADON ON NGK.MaNGK = CT_HOADON.MaNGK
+WHERE CT_HOADON.MaNGK IS NULL;
+-- them du lieu
+--
+INSERT INTO TenBang (MaNGK, TenNGK, Quycach, MaLoaiNGK)
+VALUES
+    ('CC1', 'Coca Cola', 'Chai', 'NKI'),
+    ('CC2', 'Coca Cola', 'Lon', 'NK1'),
+    ('PS1', 'Pepsi', 'Chai', 'NK1'),
+    ('ΓΕΙΤ', 'ΓΕΙΤ', 'Chai', 'NK1'),
+    ('PS2', 'Pepsi', 'Lon', 'NK1'),
+    ('SV1', 'Seven Up', 'Chai', 'NK1'),
+    ('SV2', 'Seven Up', 'Lon', 'NKI'),
+    ('ΝΟΙ', 'Number One', 'Chai', 'NK1'),
+    ('NO2', 'Number One', 'Lon', 'NK1'),
+    ('ST1', 'Sting dâu', 'Chai', 'NK1'),
+    ('ST2', 'Sting dâu', 'Lon', 'NK1'),
+    ('C2', 'Trà C2', 'Chai', 'NK2'),
+    ('OD', 'Trà xanh 0 độ', 'Chai', 'NK2'),
+    ('ML1', 'Sữa tươi tiệt trùng', 'Bich', 'NK1'),
+    ('3', 'Nước uống đóng chai', 'Chai', 'NK2');
+--bang 2
+
+
+
+
+
+
+
+
