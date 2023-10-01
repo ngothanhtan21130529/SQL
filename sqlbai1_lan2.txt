@@ -1,0 +1,114 @@
+CREATE DATABASE QuanLyDeAn;
+
+USE QuanLyDeAn;
+
+
+CREATE TABLE DeAn
+(
+    MaDA    SMALLINT PRIMARY KEY,
+    TenDA   VARCHAR(50) ,
+    KinhPhi SMALLINT
+);
+
+CREATE TABLE PhongBan
+(
+    MaPB    SMALLINT PRIMARY KEY,
+    TenPB   VARCHAR(50)  ,
+    MaTP    SMALLINT  ,
+    Diadiem VARCHAR(50)    ,
+);
+
+CREATE TABLE NhanVien
+(
+    MaNV     SMALLINT PRIMARY KEY,
+    TenNV    VARCHAR(50)   ,
+    Ngaysinh DATE        ,
+    GT       VARCHAR(5)  ,
+    MaPB     smallint,
+);
+
+CREATE TABLE ThamGia
+(
+    MaNV   SMALLINT,
+    MaDA   SMALLINT,
+    NgayBD DATE        ,
+    ChucVu VARCHAR(10),
+    PRIMARY KEY (MaNV, MaDA),
+);
+alter table PhongBan
+    add constraint fk_tp foreign key (MaTP) references NhanVien (MaNV);
+alter table NhanVien
+    add constraint fk_pb foreign key (MaPB) references PhongBan (MaPB);
+INSERT INTO DeAn (MaDA, TenDA, KinhPhi)
+VALUES (1, 'Đề án 1', 10000),
+       (2, 'Đề án 2', 15000),
+       (3, 'Đề án 3', 12000),
+       (4, 'Đề án 4', 9000),
+       (5, 'Đề án 5', 20000);
+INSERT INTO PhongBan (MaPB,TenPB, Diadiem)
+VALUES (1, 'Phòng ban A', 'Địa điểm A'),
+       ( 2,'Phòng ban B',  'Địa điểm B'),
+       ( 3,'Phòng ban C', 'Địa điểm C'),
+       (4, 'Phòng ban D',  'Địa điểm D');
+
+INSERT INTO NhanVien (MaNV,TenNV, Ngaysinh, GT)
+VALUES (1, 'Nhân viên 1', '1990-01-01', 'Nam'),
+       (2, 'Nhân viên 2', '1991-02-02', 'Nữ'),
+       ( 3,'Nhân viên 3', '1992-03-03', 'Nam'),
+       ( 4,'Nhân viên 4', '1993-04-04', 'Nữ'),
+       (5, 'Nhân viên 5', '1994-05-05', 'Nam'),
+       ( 6,'Nhân viên 6', '1995-06-06', 'Nữ'),
+       ( 7,'Nhân viên 7', '1996-07-07', 'Nam'),
+       ( 8,'Nhân viên 8', '1997-08-08', 'Nữ'),
+       ( 9,'Nhân viên 9', '1998-09-09', 'Nam'),
+       ( 10,'Nhân viên 10', '1999-10-10', 'Nữ');
+
+ Update PhongBan set MaTP = 1 where MaPB = 1;
+Update PhongBan set MaTP = 2 where MaPB = 2;
+Update PhongBan set MaTP = 3 where MaPB = 3;
+ Update PhongBan set MaTP = 4 where MaPB = 4;
+Update NhanVien set MaPB=1 where MaNV=1;
+Update NhanVien set MaPB=2 where MaNV=2;
+Update NhanVien set MaPB=3 where MaNV=3;
+Update NhanVien set MaPB=4 where MaNV=4;
+INSERT INTO ThamGia (MaNV, MaDA, NgayBD, Chucvu)
+VALUES (1, 1, '2023-01-01', 'Chức vụ 1'),
+       (2, 1, '2023-02-02', 'Chức vụ 2'),
+       (3, 2, '2023-03-03', 'Chức vụ 3'),
+       (4, 2, '2023-04-04', 'Chức vụ 4'),
+       (5, 3, '2023-05-05', 'Chức vụ 1'),
+       (6, 3, '2023-06-06', 'Chức vụ 2'),
+       (7, 4, '2023-07-07', 'Chức vụ 3'),
+       (8, 4, '2023-08-08', 'Chức vụ 4'),
+       (9, 5, '2023-09-09', 'Chức vụ 1'),
+       (10, 5, '2023-10-10', 'Chức vụ 2'),
+       (1, 3, '2023-01-01', 'Chức vụ 1'),
+       (2, 4, '2023-02-02', 'Chức vụ 2'),
+       (3, 5, '2023-03-03', 'Chức vụ 3'),
+       (4, 1, '2023-04-04', 'Chức vụ 4'),
+       (5, 2, '2023-05-05', 'Chức vụ 1');
+
+
+-- cau 1
+SELECT PhongBan.MaPB, PhongBan.TenPB, COUNT(NhanVien.MaNV) AS SLNV
+FROM PhongBan
+         LEFT JOIN NhanVien ON PhongBan.MaPB = NhanVien.MaPB
+GROUP BY PhongBan.MaPB, PhongBan.TenPB;
+-- cau 2
+SELECT DeAn.MaDA, DeAn.TenDA, COUNT(ThamGia.MaNV) AS SLNV
+FROM DeAn
+         LEFT JOIN ThamGia ON DeAn.MaDA = ThamGia.MaDA
+GROUP BY DeAn.MaDA, DeAn.TenDA;
+-- cau 3
+SELECT PhongBan.TenPB, NhanVien.TenNV AS TenTruongPhong
+FROM PhongBan
+         JOIN NhanVien ON PhongBan.MaPB = NhanVien.MaPB
+WHERE NhanVien.MaNV = PhongBan.MaTP;
+
+alter table NhanVien
+    drop constraint fk_pb;
+alter table PhongBan
+    drop constraint fk_tp;
+drop table NhanVien;
+drop table PhongBan;
+drop database QuanLyDeAn;
