@@ -1,0 +1,63 @@
+CREATE DATABASE QuanLiBanHang;
+use QuanLiBanHang;
+create table MatHang(
+    Mamh varchar(10) primary key ,
+    Tenmh varchar(10) ,
+    Dvt int,
+    SlTonDau int,
+    TGTonDau date,
+    SlNhap int,
+    TGNhap date,
+    SlXuat int,
+    TGXuat date,
+);
+create table NhaCC(
+    MaNCC varchar(10) primary key ,
+    TenNCC varchar(10),
+    DiaChiNCC varchar(10),
+    NoDau int,
+);
+create table DonHang(
+    SoDH smallint primary key ,
+    NgayDH date,
+    MaNCC varchar(10),
+    TriGia money,
+    HinhthucTT varchar(10)
+);
+create table CTDonHang(
+    SoDH smallint,
+    MaMH varchar(10),
+    primary key (SoDH,MaMH),
+    SlDat int,
+    DonGia money,
+
+
+);
+create table CTNhanHang(
+    SoPNH varchar(5),
+    Mamh varchar(10),
+    primary key (SoPNH,Mamh),
+    Slnhan int,
+
+)
+create table PhieuXuat(
+    SoPX smallint primary key ,
+    NgayXuat date,
+    NguoiXuat varchar(10),
+    LydoXuat varchar(50)
+);
+create table ChiTietXuat(
+    SoPX smallint,
+    MAMH varchar(5),
+    primary key (SoPX,MAMH),
+    SoLgXuat int,
+    DonGiaXuat money,
+
+);
+create table ThanhToan(
+    SoCT varchar(5) primary key ,
+    NgayCT date,
+    DienGiai varchar(10),
+    SoHD int,
+    SoTien money,
+);
