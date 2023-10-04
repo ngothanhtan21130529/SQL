@@ -1,0 +1,15 @@
+create view vwTienHD
+as select MSHD,NgayLap,sum(dongiaHD) as tong_tien
+from HoaDon join CTHD on HoaDon.MSHD=CTHD.MSHD
+group by (MSMH)
+
+create view vwHangKhongBanDuoc
+as select * from MatHang where soton > 0
+
+create view vwHSLuong
+as select MSNV,MSNgach,Bac,HSLuong
+from DMNgachBac join NhanVien on.....
+
+create view vwNangLuong
+as select * from NhanVien 
+where NgayNLCC =date diff
