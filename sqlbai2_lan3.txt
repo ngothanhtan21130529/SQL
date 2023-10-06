@@ -1,0 +1,659 @@
+create database QuanLyNuocNgot
+use QuanLyNuocNgot
+create table NGK
+(
+    MaNGK     varchar(10) primary key,
+    TenNGK    nvarchar(100),
+    Quycach   nvarchar(30),
+    MaLoaiNGK varchar(6)
+)
+
+create table LOAINGK
+(
+    MaLoaiNGK  varchar(6) primary key,
+    TenLoaiNGK nvarchar(100),
+    MaNCC      varchar(10)
+
+)
+
+create table NHACC
+(
+    MaNCC     varchar(10) primary key,
+    TenNCC    nvarchar(100),
+    DiaChiNCC nvarchar(500),
+    DTNCC     varchar(20)
+
+)
+
+create table KH
+(
+    MaKH  varchar(10) primary key,
+    TenKH nvarchar(100),
+    DCKH  nvarchar(50),
+
+    DTKH  varchar(20)
+)
+
+
+create table DDH
+(
+    SoDDH  varchar(10) primary key,
+    NgayDH date,
+    MaNCC  varchar(10),
+
+
+)
+
+create table CT_DDH
+(
+    SoDDH varchar(10),
+    MaNGK varchar(10),
+    SLDat int,
+    CONSTRAINT primaryKeyCTDDH PRIMARY KEY (SoDDH, MaNGK)
+
+)
+
+create table PHIEUGH
+(
+    SoPGH  varchar(10) primary key,
+    NgayGH date,
+    SoDDH  varchar(10)
+
+)
+
+create table CT_PGH
+(
+    SoPGH  varchar(10),
+    MaNGK  varchar(10),
+    SLGiao int,
+    DGGiao double precision,
+    CONSTRAINT primaryKeyPHIEUGH PRIMARY KEY (SoPGH, MaNGK)
+
+)
+
+
+create table HOADON
+(
+    SoHD      varchar(10) primary key,
+    NgaylapHD date,
+    MaKH      varchar(10),
+
+
+)
+
+create table CT_HOADON
+(
+    SoHD    varchar(10),
+    MaNGK   varchar(10),
+    SLKHMua int,
+    DGBan   double precision,
+
+    constraint primaryKeyCt_HoaDon primary key (SoHD, MaNGK)
+)
+
+create table PHIEUHEN
+(
+    SoPH        varchar(10) primary key,
+    NgayLapPH   date,
+    NgayHenGiao date,
+    MaKH        varchar(10)
+)
+
+create table CT_PH
+(
+    SoPH  varchar(10),
+    MaNGK varchar(10),
+    SLHen int,
+    constraint primaryKeyCt_PH primary key (SoPH, MaNGK)
+)
+
+create table PHIEUTRANO
+(
+    SoPTN     varchar(20) primary key,
+    NgayTra   date,
+    SoTienTra double precision,
+    SoHD      varchar(10)
+)
+
+alter table NGK
+    add constraint mlNGK foreign key (MaLoaiNGK) references LOAINGK (MaLoaiNGK)
+
+
+alter table LOAINGK
+    add constraint maNCC foreign key (MaNCC) references NHACC (MaNCC)
+
+alter table DDH
+    add constraint maNCCcuaDDH foreign key (MaNCC) references NHACC (MaNCC)
+
+alter table PHIEUGH
+    add constraint soDDH foreign key (SoDDH) references DDH (SoDDH)
+
+
+alter table HOADON
+    add constraint maKH foreign key (MaKH) references KH (MaKH)
+
+alter table PHIEUHEN
+    add constraint maKHcuaPhieuHen foreign key (MaKH) references KH (MaKH)
+
+alter table PHIEUTRANO
+    add constraint maHoaDonCuaPhieuTraNo foreign key (SoHD) references HOADON (SoHD)
+
+
+insert into NHACC(MaNCC, TenNCC, DiaChiNCC, DTNCC)
+values ('NC1', N'Công ty NGK quốc tế CocaCola', N'Xa lộ Hà Nội, Thủ Đức, TpHCM', '088967908'),
+       ('NC2', N'Công ty NGK quốc tế Pepsi', N'Bến Chương Dương, Quận 1, TpHCM', '083663366'),
+       ('NC3', N'Công ty NGK Bến Chương Dương', N'Hàm Tử, Q.5,Tp.HCM', '083663366')
+
+insert into LOAINGK(MaLoaiNGK, TenLoaiNGK, MaNCC)
+values ('NK1', N'Nước ngọt có gas', 'NC1'),
+       ('NK2', N'Nước ngọt không gas', 'NC2'),
+       ('NK3', N'Trà', 'NC1'),
+       ('NK4', N'Sữa', 'NC2')
+
+insert into NGK(MaNGK, TenNGK, Quycach, MaLoaiNGK)
+values ('CC1', N'Coca Cola', N'Chai', 'NK1'),
+       ('CC2', N'Coca Cola', N'Lon', 'NK1'),
+       ('PS1', N'Pepsi', N'Chai', 'NK1'),
+       ('PS2', N'Pepsi', N'Chai', 'NK1'),
+       ('SV1', N'Seven Up', N'Chai', 'NK1'),
+       ('SV2', N'Seven Up', N'Lon', 'NK1'),
+       ('NO1', N'Number One', N'Chai', 'NK1'),
+       ('NO2', N'Number One''', N'Lon', 'NK1'),
+       ('ST1', N'Sting dâu ', N'Chai', 'NK1'),
+       ('ST2', N'Sting dâu', N'Lon', 'NK1'),
+       ('C2', N'Trà C2', N'Chai', 'NK2'),
+       ('OD', N'Trà xanh 0 độ', N'Chai', 'NK2'),
+       ('ML1', N'Sữa tươi tiệt trùng', N'Bịch', 'NK1'),
+       ('WT1', N'Nước uống đóng chai', N'Chai', 'NK2')
+
+
+insert into KH(MaKH, TenKH, DCKH, DTKH)
+values ('KH01', N'Cửa hàng BT', N'144 XVNT', '088405996'),
+       ('KH02', N'Cửa hàng trà', N'198/42 NTT', '085974572'),
+       ('KH03', N'Siêu thị Coop', N'24 ĐTH', '086547888')
+
+insert into DDH(SoDDH, NgayDH, MaNCC)
+values ('DDH01', '2011-05-11', 'NC1'),
+       ('DDH02', '2011-05-20', 'NC1'),
+       ('DDH03', '2011-05-26', 'NC2'),
+       ('DDH04', '2011-06-03', 'NC2')
+
+insert into CT_DDH(SoDDH, MaNGK, SLDat)
+values ('DDH01', 'CC1', 20),
+       ('DDH01', 'CC2', 15),
+       ('DDH01', 'PS1', 18),
+       ('DDH01', 'SV2', 12),
+       ('DDH02', 'CC2', 30),
+       ('DDH02', 'PS2', 10),
+       ('DDH02', 'SV1', 5),
+       ('DDH02', 'ST1', 15),
+       ('DDH02', 'C2', 10),
+       ('DDH03', 'OD', 45),
+       ('DDH04', 'CC1', 8),
+       ('DDH04', 'ST2', 12)
+
+insert into PHIEUGH(SoPGH, NgayGH, SoDDH)
+values ('PGH01', '2010-05-12', 'DDH01'),
+       ('PGH02', '2010-05-15', 'DDH01'),
+       ('PGH03', '2010-05-21', 'DDH02'),
+       ('PGH04', '2010-05-22', 'DDH02'),
+       ('PGH05', '2010-05-28', 'DDH03')
+
+insert into CT_PGH (SoPGH, MaNGK, SLGiao, DGGiao)
+values ('PGH01', 'CC1', 15, 5000),
+       ('PGH01', 'CC2', 15, 4000),
+       ('PGH01', 'SV2', 10, 4000),
+       ('PGH02', 'SV2', 2, 4000),
+       ('PGH03', 'CC2', 30, 5000),
+       ('PGH03', 'PS2', 10, 4000),
+       ('PGH03', 'ST1', 15, 9000),
+       ('PGH03', 'C2', 10, 8000)
+
+
+insert into HOADON(SoHD, NgaylapHD, MaKH)
+values ('HD01', '2010-05-10', 'KH01'),
+       ('HD02', '2010-05-20', 'KH01'),
+       ('HD03', '2010-06-05', 'KH02'),
+       ('HD04', '2010-06-16', 'KH02'),
+       ('HD05', '2010-06-22', 'KH02'),
+       ('HD06', '2010-10-08', 'KH03')
+
+insert into CT_HOADON(SoHD, MaNGK, SLKHMua, DGBan)
+values ('HD01', 'CC1', 20, 6000),
+       ('HD01', 'CC2', 50, 5000),
+       ('HD02', 'ST1', 40, 10000),
+       ('HD03', 'SV2', 60, 5000),
+       ('HD04', 'PS2', 25, 5000),
+       ('HD05', 'CC1', 100, 6000),
+       ('HD05', 'SV1', 12, 8000),
+       ('HD05', 'C2', 80, 9000),
+       ('HD06', 'OD', 55, 1000),
+       ('HD06', 'ST2', 50, 11000)
+
+insert into PHIEUHEN(SoPH, NgayLapPH, NgayHenGiao, MaKH)
+values ('PH01', '2010-05-08', '2010-06-09', 'KH01'),
+       ('PH02', '2010-05-25', '2010-06-28', 'KH02'),
+       ('PH03', '2010-06-01', '2010-06-02', 'KH03')
+
+insert into CT_PH(SoPH, MaNGK, SLHen)
+values ('PH01', 'ST2', 10),
+       ('PH01', 'OD', 8),
+       ('PH02', 'CC1', 20),
+       ('PH03', 'ST1', 7),
+       ('PH03', 'SV2', 12),
+       ('PH03', 'CC2', 9),
+       ('PH04', 'PS2', 15)
+
+insert into PHIEUTRANO(SoPTN, NgayTra, SoTienTra, SoHD)
+values ('PTN01', '2010-05-18', 500000, 'HD01'),
+       ('PTN02', '2010-06-01', 350000, 'HD01'),
+       ('PTN03', '2010-06-02', 650000, 'HD02'),
+       ('PTN04', '2010-06-15', 1020000, 'HD03'),
+       ('PTN05', '2010-01-07', 1080000, 'HD03')
+
+--Cau1
+select ngk.TenNGK, lngk.TenLoaiNGK
+from NGK ngk
+         join LOAINGK lngk on ngk.MaLoaiNGK = lngk.MaLoaiNGK;
+--Cau2
+select *
+from NHACC ncc
+where ncc.DiaChiNCC like '%_TpHCM'
+--Cau3
+select *
+from HOADON hd
+where hd.NgaylapHD between '2010-05-01' and '2010-05-31'
+
+--Cau4
+select ncc.TenNCC
+from NHACC ncc
+         join LOAINGK L on ncc.MaNCC = L.MaNCC
+         join NGK ngk on ngk.MaLoaiNGK = L.MaLoaiNGK
+where ngk.TenNGK like 'Coca Cola'
+
+--Cau5
+SELECT TOP 1 ncc.MaNCC, ncc.TenNCC, COUNT(DISTINCT ngk.TenNGK) AS SoLoaiNGK
+FROM NHACC ncc
+         INNER JOIN LOAINGK loai ON ncc.MaNCC = loai.MaNCC
+         INNER JOIN NGK ngk ON loai.MaLoaiNGK = ngk.MaLoaiNGK
+GROUP BY ncc.MaNCC, ncc.TenNCC
+ORDER BY SoLoaiNGK DESC;
+
+--cau6
+SELECT DISTINCT ncc.TenNCC
+FROM NHACC ncc
+         LEFT JOIN LOAINGK loai ON ncc.MaNCC = loai.MaNCC
+         LEFT JOIN NGK ngk ON loai.MaLoaiNGK = ngk.MaLoaiNGK
+WHERE ngk.TenNGK not like 'Pepsi';
+
+--cau7
+SELECT DISTINCT ngk.MaNGK, ngk.TenNGK, ngk.Quycach
+FROM NGK ngk
+         LEFT JOIN CT_DDH ctdh ON ngk.MaNGK = ctdh.MaNGK
+WHERE ctdh.MaNGK IS NULL
+   OR ctdh.SLDat = 0;
+
+--cau8
+SELECT ngk.TenNGK, SUM(ctdh.SLDat) AS TongSoLuongBan
+FROM NGK ngk
+         left join CT_DDH ctdh ON ngk.MaNGK = ctdh.MaNGK
+
+GROUP BY ngk.TenNGK
+
+ORDER BY ngk.TenNGK
+--cau9
+SELECT ngk.TenNGK, SUM(ctdh.SLDat) AS TongSoLuongBan
+FROM NGK ngk
+         join CT_DDH ctdh ON ngk.MaNGK = ctdh.MaNGK
+
+GROUP BY ngk.TenNGK
+
+ORDER BY ngk.TenNGK
+
+--cau10
+SELECT TOP 1 ctddh.SoDDH, ngk.MaNGK, SUM(ctddh.SLDat) AS TongSLDat
+FROM CT_DDH ctddh
+         JOIN NGK ngk ON ctddh.MaNGK = ngk.MaNGK
+GROUP BY ctddh.SoDDH, ngk.MaNGK
+ORDER BY TongSLDat DESC;
+
+--cau11
+SELECT ngk.*
+FROM NGK ngk
+         JOIN CT_HOADON ccht ON ngk.MaNGK = ccht.MaNGK
+         JOIN CT_DDH CD ON ngk.MaNGK = CD.MaNGK
+         JOIN HOADON H ON ccht.SoHD = H.SoHD
+WHERE H.NgaylapHD NOT BETWEEN '2010-01-01' AND '2010-01-31';
+
+--cau12
+SELECT ngk.*
+FROM NGK ngk
+         JOIN CT_HOADON ccht ON ngk.MaNGK = ccht.MaNGK
+         JOIN CT_DDH CD ON ngk.MaNGK = CD.MaNGK
+         JOIN HOADON H ON ccht.SoHD = H.SoHD
+WHERE H.NgaylapHD NOT BETWEEN '2010-06-01' AND '2010-06-30';
+
+--cau13
+select kh.TenKH, count(CH.MaNGK) as N'Thứ nước giải khát'
+from KH kh
+         join HOADON H on kh.MaKH = H.MaKH
+         join CT_HOADON CH on H.SoHD = CH.SoHD
+group by kh.TenKH
+
+--cau15
+select TOP 1 kh.TenKH, kh.MaKH, kh.DCKH, kh.DTKH, sum(CH.SLKHMua) as N'Số lượng'
+from KH kh
+         join HOADON H on kh.MaKH = H.MaKH
+         join CT_HOADON CH on H.SoHD = CH.SoHD
+group by kh.TenKH, kh.MaKH, kh.DCKH, kh.DTKH
+ORDER BY [Số lượng] DESC;
+--cau16
+select kh.TenKH, kh.MaKH, kh.DCKH, kh.DTKH, sum(CH.DGBan) as N'Tổng doanh thu'
+from KH kh
+         join HOADON H on kh.MaKH = H.MaKH
+         join CT_HOADON CH on H.SoHD = CH.SoHD
+group by kh.TenKH, kh.MaKH, kh.DCKH, kh.DTKH
+--cau17
+SELECT TOP 5 ngk.TenNGK,
+             SUM(ch.SLKHMua * ch.DGBan) AS [Doanh thu]
+FROM CT_HOADON ch
+         JOIN NGK ngk ON ch.MaNGK = ngk.MaNGK
+         JOIN HOADON hd ON ch.SoHD = hd.SoHD
+WHERE MONTH(hd.NgaylapHD) = 5
+  AND YEAR(hd.NgaylapHD) = 2010
+GROUP BY ngk.TenNGK
+ORDER BY [Doanh thu] DESC;
+
+--cau18
+SELECT ngk.MaNGK,
+       ngk.TenNGK,
+       SUM(ch.SLKHMua) AS [SL bán]
+FROM CT_HOADON ch
+         JOIN NGK ngk ON ch.MaNGK = ngk.MaNGK
+         JOIN HOADON hd ON ch.SoHD = hd.SoHD
+WHERE MONTH(hd.NgaylapHD) = 5
+  AND YEAR(hd.NgaylapHD) = 2010
+GROUP BY ngk.MaNGK, ngk.TenNGK;
+--cau19
+SELECT top 1 ngk.MaNGK,
+             ngk.TenNGK,
+             SUM(ctddh.SLDat) AS [Tổng số lượng đặt]
+FROM CT_DDH ctddh
+         JOIN NGK ngk ON ctddh.MaNGK = ngk.MaNGK
+GROUP BY ngk.MaNGK, ngk.TenNGK
+ORDER BY [Tổng số lượng đặt] DESC
+
+-- cau20
+
+SELECT MAX(NgayDH) AS [Ngày gần nhất]
+FROM DDH
+--cau21
+SELECT COUNT(*) AS [Số lần mua hàng]
+FROM HOADON
+WHERE MaKH = 'KH001'
+
+--cau22
+SELECT SoHD, SUM(SLKHMua * DGBan) AS [Tổng tiền]
+FROM CT_HOADON
+GROUP BY SoHD;
+
+--cau23
+SELECT H.SoHD, H.NgaylapHD, H.MaKH, KH.TenKH, SUM(CH.SLKHMua * CH.DGBan) AS TongTriGia
+FROM HOADON H
+         INNER JOIN KH ON H.MaKH = KH.MaKH
+         INNER JOIN CT_HOADON CH ON H.SoHD = CH.SoHD
+GROUP BY H.SoHD, H.NgaylapHD, H.MaKH, KH.TenKH
+ORDER BY H.NgaylapHD ASC, TongTriGia DESC;
+
+--cau24
+SELECT H.SoHD, H.NgaylapHD, SUM(CH.SLKHMua * CH.DGBan) AS TongTriGia
+FROM HOADON H
+         INNER JOIN CT_HOADON CH ON H.SoHD = CH.SoHD
+WHERE H.NgaylapHD = '2010-06-18'
+GROUP BY H.SoHD, H.NgaylapHD
+HAVING SUM(CH.SLKHMua * CH.DGBan) > (SELECT AVG(SLKHMua * DGBan)
+                                     FROM CT_HOADON
+                                     WHERE SoHD IN (SELECT SoHD FROM HOADON WHERE NgaylapHD = '2010-06-18'))
+
+--cau25
+SELECT YEAR(HOADON.NgaylapHD)  AS Nam,
+       MONTH(HOADON.NgaylapHD) AS Thang,
+       NGK.MaNGK,
+       SUM(CT_HOADON.SLKHMua)  AS SoLuong
+FROM HOADON
+         INNER JOIN CT_HOADON ON HOADON.SoHD = CT_HOADON.SoHD
+         INNER JOIN NGK ON CT_HOADON.MaNGK = NGK.MaNGK
+WHERE YEAR(HOADON.NgaylapHD) = 2010
+GROUP BY YEAR(HOADON.NgaylapHD), MONTH(HOADON.NgaylapHD), NGK.MaNGK
+--cau26
+SELECT NGK.MaNGK, NGK.TenNGK
+FROM NGK
+         LEFT JOIN CT_HOADON ON NGK.MaNGK = CT_HOADON.MaNGK
+         LEFT JOIN HOADON ON CT_HOADON.SoHD = HOADON.SoHD
+WHERE YEAR(HOADON.NgaylapHD) = 2010
+  AND MONTH(HOADON.NgaylapHD) = 9
+  AND CT_HOADON.MaNGK IS NULL;
+--cau27
+
+SELECT DISTINCT KH.MaKH, KH.TenKH, KH.DCKH, KH.DTKH
+FROM KH
+         INNER JOIN HOADON ON KH.MaKH = HOADON.MaKH
+         INNER JOIN CT_HOADON ON HOADON.SoHD = CT_HOADON.SoHD
+         INNER JOIN NGK ON CT_HOADON.MaNGK = NGK.MaNGK
+WHERE KH.DCKH LIKE N'%TP.HCM%'
+  AND YEAR(HOADON.NgaylapHD) = 2010
+  AND MONTH(HOADON.NgaylapHD) = 9;
+
+--cau28
+SELECT n.MaNGK, n.TenNGK, SUM(ch.SLKHMua) AS SoLuongDaBan
+
+
+FROM NGK n
+         LEFT JOIN CT_HOADON ch ON n.MaNGK = ch.MaNGK
+         LEFT JOIN HOADON h ON ch.SoHD = h.SoHD
+WHERE h.NgaylapHD BETWEEN '2010-10-01' AND '2010-10-31'
+GROUP BY n.MaNGK, n.TenNGK
+
+
+--cau29
+
+SELECT k.MaKH, k.TenKH, n.MaNGK, n.TenNGK, SUM(ch.SLKHMua) AS TongSoLuong
+FROM KH k
+         JOIN HOADON h ON k.MaKH = h.MaKH
+         JOIN CT_HOADON ch ON h.SoHD = ch.SoHD
+         JOIN NGK n ON ch.MaNGK = n.MaNGK
+GROUP BY k.MaKH, k.TenKH, n.MaNGK, n.TenNGK
+ORDER BY k.MaKH, n.MaNGK;
+
+
+--cau30
+SELECT top 1 kh.MaKH, kh.TenKH, SUM(ptn.SoTienTra) AS TongNo
+FROM KH kh
+         LEFT JOIN HOADON hd ON kh.MaKH = hd.MaKH
+         LEFT JOIN PHIEUTRANO ptn ON hd.SoHD = ptn.SoHD
+WHERE YEAR(ptn.NgayTra) = 2010
+GROUP BY kh.MaKH, kh.TenKH
+ORDER BY TongNo DESC
+
+--cau31
+SELECT COUNT(*) AS SoLuongHoaDonChuaThanhToan
+FROM HOADON
+WHERE SoHD NOT IN (SELECT DISTINCT SoHD FROM PHIEUTRANO);
+
+--cau32
+SELECT H.SoHD, H.NgaylapHD, H.MaKH, K.TenKH
+FROM HOADON H
+         INNER JOIN KH K ON H.MaKH = K.MaKH
+WHERE H.SoHD NOT IN (SELECT DISTINCT P.SoHD
+                     FROM PHIEUTRANO P
+                     WHERE P.SoHD IS NOT NULL)
+  AND H.SoHD IN (SELECT CT.SoHD
+                 FROM CT_HOADON CT
+                 GROUP BY CT.SoHD
+                 HAVING SUM(CT.SLKHMua) > 0);
+--cau33
+SELECT NGK.MaNGK, NGK.TenNGK, SUM(CT_DDH.SLDat) AS TongSLDat
+FROM NGK
+         JOIN CT_DDH ON NGK.MaNGK = CT_DDH.MaNGK
+         JOIN DDH ON CT_DDH.SoDDH = DDH.SoDDH
+WHERE YEAR(DDH.NgayDH) = 2010
+GROUP BY NGK.MaNGK, NGK.TenNGK;
+
+
+--cau34
+
+SELECT KH.MaKH, KH.TenKH, SUM(CT_HOADON.SLKHMua * CT_HOADON.DGBan) AS TongTienMua
+FROM KH
+         JOIN HOADON ON KH.MaKH = HOADON.MaKH
+         JOIN CT_HOADON ON HOADON.SoHD = CT_HOADON.SoHD
+WHERE YEAR(HOADON.NgaylapHD) = 2010
+GROUP BY KH.MaKH, KH.TenKH
+ORDER BY TongTienMua DESC;
+
+--View
+--cau1
+CREATE VIEW V_NGK AS
+SELECT NGK.MaNGK,
+       NGK.TenNGK,
+       NGK.Quycach,
+       SUM(CT_HOADON.SLKHMua)                   AS SoLuongBan,
+       SUM(CT_HOADON.SLKHMua * CT_HOADON.DGBan) AS TongTien
+FROM NGK
+         JOIN CT_HOADON ON NGK.MaNGK = CT_HOADON.MaNGK
+GROUP BY NGK.MaNGK, NGK.TenNGK, NGK.Quycach;
+
+--cau4
+
+CREATE VIEW V_ngk_ton AS
+SELECT N.MaNGK, N.TenNGK, N.Quycach
+FROM NGK N
+         LEFT JOIN CT_HOADON CH ON N.MaNGK = CH.MaNGK
+WHERE CH.MaNGK IS NULL;
+
+select *
+from V_ngk_ton
+--procedure
+-- cau 1
+create procedure sp_ngk()
+as
+begin
+    select *
+    from NGK
+             left join LOAINGK L on NGK.MaLoaiNGK = L.MaLoaiNGK
+end
+go
+-- cau 2
+create procedure sp_nnc(@mancc varchar(10))
+as
+begin
+    select *
+    from NHACC
+    where MaNCC = @mancc
+end
+go
+-- cau 3
+create procedure sp_ton()
+as
+begin
+    select *
+    from NGK
+             left join CT_HOADON CH on NGK.MaNGK = CH.MaNGK
+    where CH.MaNGK is null
+end
+go
+--cau 4(5)
+create procedure sp_dt(@nam int, @doanhthu decimal(2, 8) output)
+as
+begin
+    SELECT @doanhthu = SUM(CH.SLKHMua * CH.DGBan)
+    FROM CT_HOADON CH
+             INNER JOIN HOADON H ON CH.SoHD = H.SoHD
+    WHERE YEAR(H.NgaylapHD) = @Nam;
+end
+    -- cau 6
+    create procedure sp_danhsach(@n int, @thang int)
+    as
+    begin
+        select top (@n), TenNGK, sum (SLKHMua*DGBan) as DoanhThu
+        from NGK join CT_HOADON
+        on NGK.MaNGK =CT_HOADON.MaNGK
+            join HOADON on HOADON.SOHD=CT_HOADON.SOHD
+        group by TenNGK
+        order by SLKHMua asc;
+    end
+        -- function
+        create function f_list(
+            @Ngay_1 int,
+            @Ngay_2 int
+        )
+            returns table
+                    as
+    begin
+        select MaNGK, TenNGK, Quycach, SoLuongBan as soluong
+        from NGK
+                 join CT_HOADON C on NGK.MaNGK = C.MaNGK
+            join HOADON H2 on C.SoHD = H2.SoHD
+        where NgaylapHD in (@Ngay_1,@Ngay2)
+    end
+        create function f_max(
+        )
+            returns table
+                    as
+    begin
+        select SoDDH,MaNGK,max(SLDat) as SoLuongDat
+        from CT_DDH join V_NGK VN on CT_DDH.MaNGK = VN.MaNGK
+    end
+create function f_kh(
+
+)
+returns table
+as
+begin
+    select top 1 MaKH,TenKH,count(NgaylapHD) as solanmua
+    from HOADON join KH K on HOADON.MaKH = K.MaKH
+    group by MaKH,TenKH
+end
+
+create function f_xlkh(
+@MaKH int
+)
+returns table
+as
+begin
+
+    SELECT  SUM(CH.SLKHMua * CH.DGBan) as TongTien
+    FROM CT_HOADON CH
+             INNER JOIN HOADON H ON CH.SoHD = H.SoHD
+    WHERE H.MaKH = @MaKH
+
+    DECLARE @XepLoai varchar(50)
+
+    SET @XepLoai =
+            CASE
+                WHEN TongTien > 800000 THEN 'Vip'
+                WHEN TongTien > 500000 THEN 'Thành viên'
+                ELSE 'Thân thiết'
+                END
+
+    RETURN @XepLoai
+END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
